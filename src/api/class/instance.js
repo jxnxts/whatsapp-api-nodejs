@@ -19,6 +19,7 @@ const useMongoDBAuthState = require('../helper/mongoAuthState')
 
 class WhatsAppInstance {
     socketConfig = {
+        defaultQueryTimeoutMs: undefined,
         printQRInTerminal: false,
         logger: pino({
             level: config.log.level,
@@ -26,23 +27,31 @@ class WhatsAppInstance {
     }
     key = ''
     authState
-    allowWebhook = false
+    allowWebhook = undefined
+    webhook = undefined
+
     instance = {
         key: this.key,
         chats: [],
         qr: '',
         messages: [],
         qrRetry: 0,
+        customWebhook: '',
     }
 
     axiosInstance = axios.create({
         baseURL: config.webhookUrl,
     })
 
-    constructor(key, allowWebhook = false, webhook = null) {
+    constructor(key, allowWebhook, webhook) {
         this.key = key ? key : uuidv4()
-        this.allowWebhook = config.webhookEnabled
-        if (this.allowWebhook && webhook !== null) {
+        this.instance.customWebhook = this.webhook ? this.webhook : webhook
+        this.allowWebhook = config.allowWebhook
+            ? config.allowWebhook
+            : allowWebhook
+        if (this.allowWebhook && this.instance.customWebhook !== null) {
+            this.allowWebhook = true
+            this.instance.customWebhook = webhook
             this.axiosInstance = axios.create({
                 baseURL: webhook,
             })
@@ -273,11 +282,25 @@ class WhatsAppInstance {
         sock?.ev.on('groups.upsert', async (newChat) => {
             //console.log(newChat)
             this.createGroupByApp(newChat)
+            await this.SendWebhook('group_created', {
+              data: newChat
+            })
         })
 
         sock?.ev.on('groups.update', async (newChat) => {
             //console.log(newChat)
             this.updateGroupByApp(newChat)
+            await this.SendWebhook('group_updated', {
+              data: newChat
+            })
+        })
+
+
+        sock?.ev.on('group-participants.update', async (newChat) => {
+            //console.log('group-participants.update')
+            await this.SendWebhook('group_participants_updated', {
+              data: newChat
+            })
         })
     }
 
@@ -285,6 +308,7 @@ class WhatsAppInstance {
         return {
             instance_key: key,
             phone_connected: this.instance?.online,
+            webhookUrl: this.instance.customWebhook,
             user: this.instance?.online ? this.instance.sock?.user : {},
         }
     }
