@@ -46,8 +46,8 @@ class WhatsAppInstance {
     constructor(key, allowWebhook, webhook) {
         this.key = key ? key : uuidv4()
         this.instance.customWebhook = this.webhook ? this.webhook : webhook
-        this.allowWebhook = config.allowWebhook
-            ? config.allowWebhook
+        this.allowWebhook = config.webhookEnabled
+            ? config.webhookEnabled
             : allowWebhook
         if (this.allowWebhook && this.instance.customWebhook !== null) {
             this.allowWebhook = true
@@ -459,6 +459,22 @@ class WhatsAppInstance {
         return result
     }
 
+    // change your display picture or a group's
+    async updateProfilePicture(id, url) {
+        try {
+            const img = await axios.get(url, { responseType: 'arraybuffer' });
+            const res = await this.instance.sock?.updateProfilePicture(id, img.data );
+            return res
+        } catch (e) {
+            //console.log(e)
+            return {
+                error: true,
+                message:
+                    'Unable to update profile picture',
+            }
+        }
+    }
+
     // Group Methods
     parseParticipants(users) {
         return users.map((users) => this.getWhatsAppId(users))
@@ -558,15 +574,15 @@ class WhatsAppInstance {
 
     // create new group by application
     async createGroupByApp(newChat) {
-        let Chats = await this.getChat()
-        let group = {
-            id: newChat[0].id,
-            name: newChat[0].subject,
-            participant: newChat[0].participants,
-            messages: [],
-        }
-        Chats.push(group)
         try {
+            let Chats = await this.getChat()
+            let group = {
+                id: newChat[0].id,
+                name: newChat[0].subject,
+                participant: newChat[0].participants,
+                messages: [],
+            }
+            Chats.push(group)
             await this.updateDb(Chats)
         } catch (e) {
             logger.error('Error updating document failed')
@@ -574,10 +590,12 @@ class WhatsAppInstance {
     }
 
     async updateGroupByApp(newChat) {
-        let Chats = await this.getChat()
-        Chats.find((c) => c.id === newChat[0].id).name = newChat[0].subject
         try {
-            await this.updateDb(Chats)
+            if(newChat[0] && newChat[0].subject){
+              let Chats = await this.getChat()
+              Chats.find((c) => c.id === newChat[0].id).name = newChat[0].subject
+              await this.updateDb(Chats)
+            }
         } catch (e) {
             logger.error('Error updating document failed')
         }
@@ -586,6 +604,78 @@ class WhatsAppInstance {
     async groupFetchAllParticipating() {
         const result = await this.instance.sock?.groupFetchAllParticipating()
         return result
+    }
+
+    // update promote demote remove
+    async groupParticipantsUpdate(id, users, action) {
+        try {
+            const res = await this.instance.sock?.groupParticipantsUpdate(
+                this.getWhatsAppId(id),
+                this.parseParticipants(users),
+                action
+            )
+            return res
+        } catch (e) {
+            //console.log(e)
+            return {
+                error: true,
+                message:
+                    'unable to ' + action + ' some participants, check if you are admin in group or participants exists',
+            }
+        }
+    }
+
+    // update group settings like
+    // only allow admins to send messages
+    async groupSettingUpdate(id, action) {
+        try {
+            const res = await this.instance.sock?.groupSettingUpdate(
+                this.getWhatsAppId(id),
+                action
+            )
+            return res
+        } catch (e) {
+            //console.log(e)
+            return {
+                error: true,
+                message:
+                    'unable to ' + action + ' check if you are admin in group',
+            }
+        }
+    }
+
+    async groupUpdateSubject(id, subject) {
+        try {
+            const res = await this.instance.sock?.groupUpdateSubject(
+                this.getWhatsAppId(id),
+                subject
+            )
+            return res
+        } catch (e) {
+            //console.log(e)
+            return {
+                error: true,
+                message:
+                    'unable to update subject check if you are admin in group',
+            }
+        }
+    }
+
+    async groupUpdateDescription(id, description) {
+        try {
+            const res = await this.instance.sock?.groupUpdateDescription(
+                this.getWhatsAppId(id),
+                description
+            )
+            return res
+        } catch (e) {
+            //console.log(e)
+            return {
+                error: true,
+                message:
+                    'unable to update description check if you are admin in group',
+            }
+        }
     }
 
     // update db document -> chat
