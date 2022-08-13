@@ -1,14 +1,21 @@
-<h1 style="text-align: center"> whatsapp-api-nodejs Multi Device</h1>
-<p style="text-align: center">
+<h1 align="center"> whatsapp-api-nodejs Multi Device</h1>
+<div align="center">
+<p>
 <a href="#"><img title="skynet" src="https://img.shields.io/badge/whatsapp api nodejs Multi Device-black?style=for-the-badge" alt=""></a>
 </p>
-<p style="text-align: center">
+<p>
 <a href="https://github.com/salman0ansari"><img title="Author" src="https://img.shields.io/badge/Author-Mohd Salman Ansari-black.svg?style=for-the-badge&logo=github" alt=""></a>
 </p>
-<p style="text-align: center">
-<a href="https://github.com/salman0ansari/whatsapp-api-nodejs"><img title="Followers" src="https://img.shields.io/github/followers/salman0ansari?color=black&style=flat-square" alt=""></a>
-<a href="https://github.com/salman0ansari/whatsapp-api-nodejs"><img title="Stars" src="https://img.shields.io/github/stars/salman0ansari/whatsapp-api-nodejs?color=black&style=flat-square" alt=""></a>
+<a href="https://github.com/salman0ansari?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/salman0ansari?color=black&style=flat-square" alt=""></a>
+<a href="https://github.com/salman0ansari/whatsapp-api-nodejs/stargazers"><img title="Stars" src="https://img.shields.io/github/stars/salman0ansari/whatsapp-api-nodejs?color=black&style=flat-square" alt=""></a>
 <a href="https://github.com/salman0ansari/whatsapp-api-nodejs/network/members"><img title="Forks" src="https://img.shields.io/github/forks/salman0ansari/whatsapp-api-nodejs?color=black&style=flat-square" alt=""></a>
+<a href="https://github.com/salman0ansari/whatsapp-api-nodejs/issues"><img title="Issues" src="https://img.shields.io/github/issues/salman0ansari/whatsapp-api-nodejs?color=black&style=flat-square" alt=""></a>
+<p>
+
+<a href="http://github.com/salman0ansari/whatsapp-api-nodejs"><img title="Hits" src="http://hits.dwyl.com/salman0ansari/whatsapp-api-nodejs.svg?style=flat-square"></a>
+</p>
+<a href="https://www.buymeacoffee.com/salman0ansari" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+</div>
 
 ---
 
